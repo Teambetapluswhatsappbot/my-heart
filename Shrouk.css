@@ -1,114 +1,120 @@
-1:root {
-    --primary-red: #ff4d6d;
-    --soft-pink: #ffb3c1;
-    --bg-color: #f0f4f8; /* هادي وقريب من الـ sky_background */
-    --white: #ffffff;
-    --card-margin: 24px;
-    --card-padding: 16px;
+:root {
+    --bg-gradient: linear-gradient(135deg, #fff5f7 0%, #fde2e4 100%);
+    --envelope-grad: linear-gradient(135deg, #ffb3c1 0%, #ffc4d0 100%);
+    --flap-color: #ff99ac;
+    --letter-paper: #ffffff;
+    --heart-color: #ff4d6d;
+    --text-color: #444;
 }
 
 body {
-    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: var(--bg-color);
+    min-height: 100vh;
+    margin: 0;
+    background: var(--bg-gradient);
     font-family: sans-serif;
+    overflow: hidden;
+    direction: rtl;
 }
 
-/* إخفاء الـ Checkbox الأصلي */
-#open-check {
-    display: none;
+.backdrop {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    filter: blur(60px);
 }
 
-/* حاوية الجواب الرئيسية */
 .envelope-wrapper {
     position: relative;
-    width: 300px;
-    height: 200px;
-    margin: var(--card-margin);
+    width: 320px;
+    height: 220px;
     cursor: pointer;
+    z-index: 1;
 }
+
+#open-trigger { display: none; }
 
 .envelope {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: var(--soft-pink);
-    border-radius: 0 0 12px 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    z-index: 1;
+    background: var(--envelope-grad);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    z-index: 2;
+    overflow: hidden;
 }
 
-/* الغطاء العلوي */
 .flap {
     position: absolute;
     top: 0;
-    width: 0;
-    height: 0;
-    border-left: 150px solid transparent;
-    border-right: 150px solid transparent;
-    border-top: 110px solid var(--primary-red);
+    left: 0;
+    border-left: 160px solid transparent;
+    border-right: 160px solid transparent;
+    border-top: 120px solid var(--flap-color);
     transform-origin: top;
-    transition: transform 0.6s ease;
-    z-index: 4;
-}
-
-/* الورقة (الرسالة) */
-.letter {
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    height: 170px;
-    background: var(--white);
-    padding: var(--card-padding);
-    border-radius: 8px;
-    text-align: center;
-    box-sizing: border-box;
-    transition: transform 0.6s ease;
-    z-index: 2;
-}
-
-/* القلوب المتطايرة (CSS Only) */
-.hearts-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    pointer-events: none;
+    transition: transform 0.8s ease-in-out, z-index 0.3s;
     z-index: 5;
 }
 
-.heart {
+.flap::after {
+    content: '❤️';
     position: absolute;
-    bottom: 50%;
+    top: -105px;
+    left: -12px;
+    font-size: 24px;
+    color: white;
+}
+
+.letter {
+    position: absolute;
+    bottom: 10px;
     left: 50%;
-    font-size: 20px;
-}
-
-/* الأكشن لما الـ Checkbox يبقى Checked */
-#open-check:checked + .envelope-wrapper .flap {
-    transform: rotateX(180deg);
-    z-index: 0;
-}
-
-#open-check:checked + .envelope-wrapper .letter {
-    transform: translateX(-50%) translateY(-130px);
+    transform: translateX(-50%);
+    width: 90%;
+    height: 190px;
+    background: var(--letter-paper);
+    padding: 24px;
+    border-radius: 8px;
+    transition: transform 0.8s ease-in-out;
     z-index: 3;
+    text-align: center;
+    opacity: 0;
 }
 
-#open-check:checked + .envelope-wrapper .hearts-container {
+/* الأكشن عند الضغط */
+#open-trigger:checked + .envelope-wrapper .flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+#open-trigger:checked + .envelope-wrapper .letter {
+    transform: translateX(-50%) translateY(-140px);
     opacity: 1;
 }
 
-/* أنيميشن القلوب */
-#open-check:checked + .envelope-wrapper .heart-1 { animation: fly-1 2s ease-out forwards; }
-#open-check:checked + .envelope-wrapper .heart-2 { animation: fly-2 2s ease-out forwards; delay: 0.2s; }
-#open-check:checked + .envelope-wrapper .heart-3 { animation: fly-3 2s ease-out forwards; delay: 0.4s; }
+/* ديكورات إضافية للجوانب */
+.side-flap-left {
+    position: absolute; bottom: 0; left: 0;
+    border-left: 160px solid #ffcad5; border-top: 110px solid transparent; z-index: 4;
+}
+.side-flap-right {
+    position: absolute; bottom: 0; right: 0;
+    border-right: 160px solid #ffcada; border-top: 110px solid transparent; z-index: 4;
+}
 
-@keyframes fly-1 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(-80px, -180px); opacity: 0; } }
-@keyframes fly-2 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(0px, -220px); opacity: 0; } }
-@keyframes fly-3 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(80px, -180px); opacity: 0; } }
+/* أنيميشن القلوب */
+.bg-heart { position: absolute; color: var(--heart-color); opacity: 0; bottom: 0; font-size: 25px; }
+#open-trigger:checked ~ .bg-hearts .bg-heart {
+    animation: floatHeart 4s linear infinite;
+}
+
+@keyframes floatHeart {
+    0% { transform: translateY(0); opacity: 0; }
+    20% { opacity: 0.7; }
+    100% { transform: translateY(-100vh); opacity: 0; }
+}
